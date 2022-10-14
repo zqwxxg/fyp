@@ -123,8 +123,8 @@ if __name__ == "__main__":
                             complexity_lst.append(st.slider("Rate user story complexity", min_value=1, max_value=5, step=1, key="comp_%d" % i))
 
                 team_vel = st.number_input('Enter team velocity', min_value=0, step=1)
-                sprint_size = st.number_input('Enter number of days in sprint', min_value=1, value=1, step=1)
-                work_days = st.number_input('Enter work days per month', min_value=1, value=1, step=1)
+                sprint_size = st.number_input('Enter number of days in sprint', min_value=1, max_value=28, step=1)
+                work_days = st.number_input('Enter work days per month', min_value=1, max_value=31, step=1)
                 c1, c2, c3 = st.columns(3)
                 with st.container():
                     with c1:
@@ -179,9 +179,9 @@ if __name__ == "__main__":
             c1, c2 = st.columns(2)
             with st.container():
                 with c1:
-                    team_exp = st.number_input('Enter team experience mesured in years (-1 for zero experience)', min_value=-1, value=0, step=1)
+                    team_exp = st.number_input('Enter team experience mesured in years (-1 for zero experience)', min_value=-1, max_value=50, value=0, step=1)
                 with c2:
-                    manager_exp = st.number_input('Enter manager experience mesured in years (-1 for zero experience)', min_value=-1, value=0, step=1)
+                    manager_exp = st.number_input('Enter manager experience mesured in years (-1 for zero experience)', min_value=-1, max_value=50, value=0, step=1)
             with st.container():
                 with c1:
                     length = st.number_input('Enter duration of the project in months', min_value=0, step=1)
