@@ -1,6 +1,5 @@
 import streamlit as st
 import streamlit_tags as sttags
-import pandas as pd
 import numpy as np
 import joblib
 
@@ -118,7 +117,7 @@ if __name__ == "__main__":
                     with st.container():
                         with c1:
                             st.write("Task ", i+1, ": ", task_title_lst[i])
-                            story_size_lst.append(st.slider("Rate story size", max_value=5, value=1, step=1, key="story_%d" % i))
+                            story_size_lst.append(st.slider("Rate story size", value=(1,5), step=1, key="story_%d" % i))
                         with c2:
                             st.write(".")
                             complexity_lst.append(st.slider("Rate user story complexity", max_value=5, value=1, step=1, key="comp_%d" % i))
