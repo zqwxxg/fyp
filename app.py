@@ -179,9 +179,9 @@ if __name__ == "__main__":
             c1, c2 = st.columns(2)
             with st.container():
                 with c1:
-                    team_exp = st.number_input('Enter team experience mesured in years (-1 for zero experience)', min_value=-1, max_value=50, value=0, step=1)
+                    team_exp = st.number_input('Enter team experience mesured in years (-1 for zero experience)', min_value=-1, value=0, step=1)
                 with c2:
-                    manager_exp = st.number_input('Enter manager experience mesured in years (-1 for zero experience)', min_value=-1, max_value=50, value=0, step=1)
+                    manager_exp = st.number_input('Enter manager experience mesured in years (-1 for zero experience)', min_value=-1, value=0, step=1)
             with st.container():
                 with c1:
                     length = st.number_input('Enter duration of the project in months', min_value=0, step=1)
