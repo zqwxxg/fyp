@@ -117,10 +117,10 @@ if __name__ == "__main__":
                     with st.container():
                         with c1:
                             st.write("Task ", i+1, ": ", task_title_lst[i])
-                            story_size_lst.append(st.slider("Rate story size", value=(1,5), step=1, key="story_%d" % i))
+                            story_size_lst.append(st.slider("Rate story size", min_value=1, max_value=5, step=1, key="story_%d" % i))
                         with c2:
                             st.write(".")
-                            complexity_lst.append(st.slider("Rate user story complexity", max_value=5, value=1, step=1, key="comp_%d" % i))
+                            complexity_lst.append(st.slider("Rate user story complexity", min_value=1, max_value=5, step=1, key="comp_%d" % i))
 
                 team_vel = st.number_input('Enter team velocity', min_value=0, step=1)
                 sprint_size = st.number_input('Enter number of days in sprint', min_value=1, value=1, step=1)
