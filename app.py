@@ -3,6 +3,7 @@ import streamlit_tags as sttags
 import numpy as np
 import joblib
 
+# Preset values
 FF_OPTIONS = ["Stable", "Volatile", "Hightly Volatile", "Very Highly Volatile"]
 FF_TEAM_COMP = {"Stable":1, 
                 "Volatile":0.98, 
@@ -72,20 +73,54 @@ TRAD_MODEL_NAME = "trad_trained_model.joblib"
 AGILE_MODEL_NAME = "agile_trained_model.joblib"
 
 
+
 def callback():
+    """
+    Changes the current state to True if a button is clicked
+    """
     st.session_state.button_clicked = True
 
+
+@st.cache(allow_output_mutation=True)
+def load_trad_model():
+    """
+    Load trad model
+    """
+    trad_model = joblib.load(TRAD_MODEL_NAME)
+    return trad_model
+
+
+@st.cache(allow_output_mutation=True)
+def load_agile_model():
+    """
+Load agile model
+    """
+    agile_model = joblib.load(AGILE_MODEL_NAME)
+    return agile_model
+
+
 def trad_predict_effort(model, numpy_arr):
+    """
+    Predicts the effort required for traditional projects
+    """
     effort = model.predict(numpy_arr)
     return int(effort)
 
+
 def predict_sp(story_size_lst, complexity_lst):
+    """
+    Computes the total story points for all user stories
+    """
     sp = []
     for num1, num2 in zip(story_size_lst, complexity_lst):
         sp.append(num1*num2)
     return sum(sp)
 
+
 def agile_predict_effort(model, numpy_arr, workdays):
+    """
+    Predicts the effort required for agile projects
+    """
     effort = model.predict(numpy_arr)
     effort = int(effort) * (1/workdays)
     return round(effort, 1)
@@ -94,6 +129,8 @@ def agile_predict_effort(model, numpy_arr, workdays):
 if __name__ == "__main__":
     submitted1 = False
     submitted2 = False
+
+    # check if button is clicked
     if "button_clicked" not in st.session_state:
         st.session_state.button_clicked = False
 
@@ -102,17 +139,20 @@ if __name__ == "__main__":
     method_select = st.selectbox("Select project development methodology", options=["Agile", "Traditional"])
 
     if method_select == "Agile":
-
+        # task titles
         task_title_lst = sttags.st_tags(label="Enter task title", text="Press enter to add more")
-
+        # if proceed has not been clicked yet 
         if st.button("Proceed", on_click=callback) or st.session_state.button_clicked:
+            # prompt user error
             if not task_title_lst:
                 st.error("Please enter a task title!")
                 st.stop()
+            # fill in form
             with st.form("form1"):
                 c1, c2 = st.columns(2)
                 story_size_lst = []
                 complexity_lst = []
+                # generate user stories based on the no of task titles entered
                 for i, x in enumerate(task_title_lst):
                     with st.container():
                         with c1:
@@ -160,16 +200,21 @@ if __name__ == "__main__":
                 submitted1 = st.form_submit_button("Predict Software Effort")
 
             if submitted1:
+                # load model
                 with st.spinner("Loading model from the server, this may take a while..."):
-                    agile_model = joblib.load(AGILE_MODEL_NAME)
+                    agile_model = load_agile_model()
                     st.success('Model Loaded Successfully!')
+                # compute friction factors
                 ff_score = FF_TEAM_COMP[ff_team_composition]*FF_ENV_FACT[ff_environment_fact]*FF_PROCESS[ff_process]*FF_TEAM_DYN[ff_team_dynamic]
+                # compute dynamic forces factors
                 df_score = DF_TEAM_CHANGE[df_team_change]*DF_NEW_TOOL[df_new_tool]*DF_CHANGE_REQ[df_change_requirements]*DF_PERSONAL_ISSUE[df_personal_issue]*DF_RELOCATE[df_relocation]*DF_STAKEHOLDER[df_stakeholder]*DF_TEAM_RESP[df_team_responsibility]*DF_UNCLEAR_REQ[df_unclear_requirements]*DF_VENDOR_DEFECT[df_vendor_defect]
                 deceleration = ff_score*df_score
                 final_vel = team_vel ** deceleration
                 initial_vel = team_vel / sprint_size
                 total_sp = predict_sp(story_size_lst, complexity_lst)
+                # store all input fields into a numpy array
                 user_input = np.array([[total_sp, initial_vel, deceleration, final_vel, sprint_size, work_days]])
+                # predict the effort using the loaded model and user inputs
                 effort = agile_predict_effort(agile_model, user_input, work_days)
                 st.balloons()
                 st.write("Suggested effort: ", effort, " months")
@@ -195,10 +240,13 @@ if __name__ == "__main__":
             submitted2 = st.form_submit_button("Predict Software Effort")
 
         if submitted2:
+            # load model
             with st.spinner("Loading model from the server, this may take a while..."):
-                trad_model = joblib.load(TRAD_MODEL_NAME)
+                trad_model = load_trad_model()
                 st.success('Model Loaded Successfully!')
+            # store all input fields into a numpy array
             user_input = np.array([[team_exp, manager_exp, length, trans, entity, points_non_adjust]])
+            # predict the effort using the loaded model and user inputs
             effort = trad_predict_effort(trad_model, user_input)
             st.balloons()
             st.write("Suggested effort: ", effort, " person-hours")
