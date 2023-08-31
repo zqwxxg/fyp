@@ -2,4 +2,4 @@
 
 Designing software effort estimation model using machine learning techniques.
 
-See [this](https://github.com/ziqiwong228/fyp/blob/main/MCS17%20Project%20Plan.pdf) for project proposal.
+See [this](https://github.com/zqwxxg/fyp/tree/main/doc) for the project proposal, final report, and user guide.
